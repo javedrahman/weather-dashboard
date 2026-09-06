@@ -255,6 +255,39 @@
     .wx-row svg{width:43px;height:43px}
     .nav-btn{top:414px;width:62px;height:62px;font-size:43px}
   }
+
+  /* Desktop forecast details use the same fixed rhythm as the legacy Met Office table. */
+  @media (min-width:721px){
+    :root{--colw:70px}
+    .met-grid{
+      grid-template-rows:
+        41px 63px
+        30px 59px
+        29px 28px
+        31px 59px
+        30px 58px
+        30px 59px
+        29px 36px
+        29px 36px
+        28px 29px
+        29px 53px;
+    }
+    .day-head{font-size:16px;padding:12px 0 0 16px}
+    .hour-cell{font-size:16px;line-height:24px;padding:0 0 6px 12px}
+    .metric-label .label-inner{left:16px;gap:7px;font-size:14px;line-height:17.5px}
+    .metric-label select{font-size:14px;height:29px;padding:1px 24px 1px 7px}
+    .info-dot{width:24px;height:24px;font-size:16px}
+    .cell{font-size:16px;line-height:24px}
+    .cell.precip{padding-top:2px}
+    .wx-row svg{width:48px;height:48px}
+    .temp-bar{font-size:16px;line-height:24px;padding-bottom:8px}
+    .wind-cell{gap:3px;font-size:16px}
+    .wind-top{gap:4px}
+    .wind-arrow{border-left-width:10px;border-right-width:10px;border-bottom-width:20px}
+    .wind-speed{font-size:16px}
+    .uv-badge{width:48px;height:48px;font-size:16px}
+    .nav-btn{top:295px;width:62px;height:62px;font-size:43px;padding-bottom:6px}
+  }
 </style>
 </head>
 <body>
