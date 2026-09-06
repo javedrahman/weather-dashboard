@@ -302,7 +302,7 @@
     <div class="loading">Search for a place to see its forecast.</div>
   </div>
 
-  <footer>Weather data from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, sourced from national meteorological services. This is not an official Met Office product.</footer>
+  <footer>Weather data from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, sourced from national meteorological services. This is not an official Met Office product. Weather icons by <a href="https://iconstore.co/icons/weather-vector-icons" target="_blank" rel="noopener">Piotr Grzeszczyk via IconStore</a>.</footer>
 
 <script>
 const APP = document.getElementById('app');
@@ -391,6 +391,17 @@ function wxInfo(code, isDay){
 
 function wxIconSVG(kind, size){
   const s = size || 50;
+  const packTiles = {
+    cloud:'254 784 580 580', sun:'834 784 580 580', 'sun-cloud':'1415 784 580 580',
+    'moon-cloud':'1996 784 580 580', 'sun-rain':'2578 784 580 580', storm:'254 1365 580 580',
+    rain:'834 1365 580 580', snow:'1415 1365 580 580', fog:'834 1946 580 580',
+    moon:'1415 1946 580 580', drizzle:'834 1365 580 580', 'rain-heavy':'834 1365 580 580',
+    'snow-heavy':'254 1946 580 580', 'snow-rain':'254 1946 580 580'
+  };
+  const tile = packTiles[kind];
+  if(tile){
+    return `<svg viewBox="${tile}" width="${s}" height="${s}" aria-hidden="true"><image href="assets/weather-vector-icons/weather.svg" width="3318" height="3318"/></svg>`;
+  }
   const stroke = '#272727';
   const sun = '#f4a329';
   const cloud = `M9.1 35.5h26.6c5 0 8.8-3.3 8.8-7.7 0-4.2-3.5-7.6-8.1-7.6-.8 0-1.6.1-2.3.3-1.8-4.3-6.1-7.2-11-7.2-6.2 0-11.4 4.6-12 10.4h-2c-3.5 0-6.5 2.6-6.5 5.9s3 5.9 6.5 5.9z`;
