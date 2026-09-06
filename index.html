@@ -177,8 +177,9 @@
   .wind-cell{flex-direction:column;gap:7px;font-size:23px;line-height:1}
   .wind-top{display:flex;align-items:center;justify-content:center;gap:6px}
   .wind-arrow{
-    width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;
-    border-bottom:25px solid #4a4a4a;display:inline-block;transform-origin:50% 57%;
+    width:1em;height:1em;flex:0 0 1em;display:block;color:#4a4a4a;
+    fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+    transform-origin:50% 50%;
   }
   .wind-speed{font-size:26px}
 
@@ -222,7 +223,6 @@
     .wx-row svg{width:40px;height:40px}
     .temp-bar{padding-bottom:8px;font-size:20px}
     .wind-cell{gap:5px;font-size:18px}
-    .wind-arrow{border-left-width:10px;border-right-width:10px;border-bottom-width:20px}
     .wind-speed{font-size:20px}
     .uv-badge{width:38px;height:38px;font-size:19px}
     .nav-btn{top:295px;width:62px;height:62px;font-size:43px;padding-bottom:6px}
@@ -283,7 +283,6 @@
     .temp-bar{font-size:16px;line-height:24px;padding-bottom:8px}
     .wind-cell{gap:3px;font-size:16px}
     .wind-top{gap:4px}
-    .wind-arrow{border-left-width:10px;border-right-width:10px;border-bottom-width:20px}
     .wind-speed{font-size:16px}
     .uv-badge{width:48px;height:48px;font-size:16px}
     .nav-btn{top:295px;width:62px;height:62px;font-size:43px;padding-bottom:6px}
@@ -395,14 +394,16 @@ function wxIconSVG(kind, size){
   const stroke = '#272727';
   const sun = '#f4a329';
   const cloud = `M9.1 35.5h26.6c5 0 8.8-3.3 8.8-7.7 0-4.2-3.5-7.6-8.1-7.6-.8 0-1.6.1-2.3.3-1.8-4.3-6.1-7.2-11-7.2-6.2 0-11.4 4.6-12 10.4h-2c-3.5 0-6.5 2.6-6.5 5.9s3 5.9 6.5 5.9z`;
+  const moon = `M32 6C21 8 14 17 14 29c0 12 9 21 21 21 6 0 11-3 15-7-3 2-7 3-11 3-12 0-21-9-21-21 0-9 6-17 14-19z`;
+  const moonSmall = `M22 7c-8 1-14 8-14 16 0 9 7 16 16 16 4 0 8-2 11-5-2 1-5 2-8 2-9 0-16-7-16-16 0-6 4-11 11-13z`;
   const rainLines = `<g stroke="#2f76bd" stroke-width="2.7" stroke-linecap="round"><line x1="15" y1="40" x2="12" y2="47"/><line x1="25" y1="40" x2="22" y2="47"/><line x1="35" y1="40" x2="32" y2="47"/></g>`;
   const snowDots = `<g fill="#7fa4c2"><circle cx="16" cy="43" r="2.2"/><circle cx="26" cy="46" r="2.2"/><circle cx="36" cy="43" r="2.2"/></g>`;
   const icons = {
     sun:`<circle cx="25" cy="25" r="9.5" fill="${sun}" stroke="${stroke}" stroke-width="2.6"/><g stroke="${stroke}" stroke-width="2.6" stroke-linecap="round"><line x1="25" y1="3" x2="25" y2="10"/><line x1="25" y1="40" x2="25" y2="47"/><line x1="3" y1="25" x2="10" y2="25"/><line x1="40" y1="25" x2="47" y2="25"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/><line x1="35.5" y1="35.5" x2="40.5" y2="40.5"/><line x1="9.5" y1="40.5" x2="14.5" y2="35.5"/><line x1="35.5" y1="14.5" x2="40.5" y2="9.5"/></g>`,
-    moon:`<path d="M32 8c-7 1.2-12.4 7.4-12.4 14.8 0 8.5 6.9 15.3 15.3 15.3 3.2 0 6.2-1 8.6-2.7-2.4 4.4-7.1 7.4-12.4 7.4-8.4 0-15.2-6.8-15.2-15.3C15.9 18.3 22.7 10.6 32 8z" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/>`,
+    moon:`<path d="${moon}" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/>`,
     cloud:`<path d="${cloud}" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/>`,
     'sun-cloud':`<circle cx="18" cy="18" r="8" fill="${sun}" stroke="${stroke}" stroke-width="2.5"/><g stroke="${stroke}" stroke-width="2.3" stroke-linecap="round"><line x1="18" y1="4" x2="18" y2="8"/><line x1="6" y1="18" x2="10" y2="18"/><line x1="9.5" y1="8.5" x2="12.5" y2="11.5"/></g><path d="${cloud}" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/>`,
-    'moon-cloud':`<path d="M20 8c-4.3 1.1-7.5 5-7.5 9.7 0 5.5 4.5 10 10 10 2 0 3.9-.6 5.5-1.6-1.7 3-4.9 5.1-8.6 5.1-5.7 0-10.3-4.6-10.3-10.3C9.1 14.8 13.7 9.6 20 8z" fill="#fff" stroke="${stroke}" stroke-width="2.5" stroke-linejoin="round"/><path d="${cloud}" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/>`,
+    'moon-cloud':`<path d="${moonSmall}" fill="#fff" stroke="${stroke}" stroke-width="2.5" stroke-linejoin="round"/><path d="${cloud}" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/>`,
     fog:`<path d="${cloud}" fill="#fff" stroke="${stroke}" stroke-width="2.6" stroke-linejoin="round"/><g stroke="#68727b" stroke-width="2.6" stroke-linecap="round"><line x1="7" y1="40" x2="43" y2="40"/><line x1="11" y1="46" x2="39" y2="46"/></g>`,
     drizzle:`<path d="${cloud}" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/><g stroke="#2f76bd" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="41" x2="16" y2="46"/><line x1="31" y1="41" x2="29" y2="46"/></g>`,
     rain:`<path d="${cloud}" fill="#fff" stroke="${stroke}" stroke-width="2.8" stroke-linejoin="round"/>${rainLines}`,
@@ -786,7 +787,7 @@ function buildHourlyGrid(hourly, dayDates, dayGroups){
       html += cell(6, gridCol, precipText(hourly.precipitation_probability[i]), `precip ${start}`);
       html += cell(8, gridCol, `<div class="temp-bar" style="--barh:${tempBarHeight(tempC, tempMin, tempMax)}px;background:${heatColor(tempC)}">${tempDisp}&deg;</div>`, `temp-cell ${start}`);
       html += cell(10, gridCol, `<div class="temp-bar" style="--barh:${tempBarHeight(feelsC, tempMin, tempMax)}px;background:${heatColor(feelsC)}">${feelsDisp}&deg;</div>`, `temp-cell feels-cell ${start}`);
-      html += cell(12, gridCol, `<div class="wind-cell"><div class="wind-top"><span class="wind-arrow" style="transform:rotate(${hourly.winddirection_10m[i]}deg)"></span><span>${compass(hourly.winddirection_10m[i])}</span></div><div class="wind-speed">${wind}</div></div>`, `wind-cell ${start}`);
+      html += cell(12, gridCol, `<div class="wind-cell"><div class="wind-top"><svg class="wind-arrow" viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(${hourly.winddirection_10m[i]}deg)"><path d="M12 21V4M6 10l6-6 6 6"/></svg><span>${compass(hourly.winddirection_10m[i])}</span></div><div class="wind-speed">${wind}</div></div>`, `wind-cell ${start}`);
       html += cell(14, gridCol, gust, start);
       html += cell(16, gridCol, vis, start);
       html += cell(18, gridCol, `${hourly.relativehumidity_2m[i]}%`, start);
