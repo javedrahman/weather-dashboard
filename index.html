@@ -191,6 +191,43 @@
   footer{padding:0 16px 36px;font-size:13px;color:var(--muted);line-height:1.45}
   .loading,.error{max-width:1240px;margin:40px auto;padding:0 16px;color:var(--muted);font-size:16px;text-align:center}
 
+  /* The source layout contracts its hourly grid before switching to the phone layout. */
+  @media (min-width:721px) and (max-width:1400px){
+    :root{--colw:clamp(70px, calc((100vw - 160px) / 12), 104px)}
+    .section-label{margin-top:14px;font-size:20px}
+    .detail-panel{flex-basis:300px;min-height:132px;padding:11px 13px;gap:5px}
+    .detail-panel .dtitle{font-size:19px}
+    .detail-panel .dtemps{font-size:32px}
+    .detail-panel .dtemps .lo{font-size:19px}
+    .day-chip{flex-basis:104px;padding:8px 6px}
+    .met-grid{
+      grid-template-rows:
+        48px 74px
+        36px 64px
+        36px 39px
+        37px 59px
+        37px 59px
+        37px 64px
+        36px 45px
+        36px 45px
+        36px 45px
+        36px 51px;
+    }
+    .day-head{font-size:19px;padding:13px 0 0 24px}
+    .hour-cell{font-size:20px;padding:0 0 12px 14px}
+    .metric-label .label-inner{left:16px;gap:7px;font-size:18px}
+    .metric-label select{font-size:16px;height:29px;padding-right:24px}
+    .info-dot{width:24px;height:24px;font-size:17px}
+    .cell{font-size:19px}
+    .wx-row svg{width:40px;height:40px}
+    .temp-bar{padding-bottom:8px;font-size:20px}
+    .wind-cell{gap:5px;font-size:18px}
+    .wind-arrow{border-left-width:10px;border-right-width:10px;border-bottom-width:20px}
+    .wind-speed{font-size:20px}
+    .uv-badge{width:38px;height:38px;font-size:19px}
+    .nav-btn{top:350px;width:62px;height:62px;font-size:43px;padding-bottom:6px}
+  }
+
   @media (max-width:720px){
     :root{--colw:88px}
     body{font-size:16px}
