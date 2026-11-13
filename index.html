@@ -597,6 +597,26 @@ function mergeModels(fc){
   return fc;
 }
 
+/* Met Office-style day/night icons: an hour counts as daytime only if the sun is up
+   at its midpoint (e.g. with sunset at 16:20 the 16:00 hour gets a night icon).
+   Overrides the API's is_day, which marks any partly-daylit hour as day. */
+function minutesOf(isoLocal){
+  const m = /T(\d{2}):(\d{2})/.exec(isoLocal || '');
+  return m ? (+m[1]) * 60 + (+m[2]) : null;
+}
+function applyDayNight(fc){
+  if(!fc || !fc.hourly || !fc.daily || !fc.daily.sunrise) return fc;
+  const sun = {};
+  fc.daily.time.forEach((d, i) => { sun[d] = [minutesOf(fc.daily.sunrise[i]), minutesOf(fc.daily.sunset[i])]; });
+  fc.hourly.is_day = fc.hourly.time.map((t, i) => {
+    const s = sun[t.slice(0, 10)];
+    if(!s || s[0] == null || s[1] == null) return fc.hourly.is_day ? fc.hourly.is_day[i] : 1;
+    const mid = minutesOf(t) + 30;
+    return mid >= s[0] && mid < s[1] ? 1 : 0;
+  });
+  return fc;
+}
+
 async function loadLocation(loc){
   APP.innerHTML = '<div class="loading">Loading forecast...</div>';
   document.getElementById('tabsMount').innerHTML = '';
@@ -610,7 +630,7 @@ async function loadLocation(loc){
     const aqUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
       `&hourly=european_aqi,${POLLEN_VARS.join(',')}&timezone=auto&forecast_days=5`;
     const [fRes, aqRes] = await Promise.all([fetch(fUrl), fetch(aqUrl).catch(() => null)]);
-    const forecast = mergeModels(await fRes.json());
+    const forecast = applyDayNight(mergeModels(await fRes.json()));
     let aq = null;
     if(aqRes && aqRes.ok){
       try{ aq = await aqRes.json(); }catch(e){}
