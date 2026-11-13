@@ -204,7 +204,7 @@
     <div class="loading">Search for a place to see its forecast.</div>
   </div>
 
-  <footer>Weather data from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, sourced from national meteorological services. Layout inspired by the classic Met Office forecast page; this is not an official Met Office product. Weather icons by <a href="https://iconstore.co/icons/weather-vector-icons" target="_blank" rel="noopener">Piotr Grzeszczyk via IconStore</a>. Banner photo: <a href="https://commons.wikimedia.org/wiki/File:Fields_and_woods_near_Basingstoke_-_geograph.org.uk_-_7392242.jpg" target="_blank" rel="noopener">Fields and woods near Basingstoke</a> &copy; <a href="https://www.geograph.org.uk/profile/43370" target="_blank" rel="noopener">Des Blenkinsopp</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA 2.0</a>.</footer>
+  <footer>Forecast from Met Office UKMO models (UKV 2&nbsp;km and Global 10&nbsp;km) via <a href="https://open-meteo.com/en/docs/ukmo-api" target="_blank" rel="noopener">Open-Meteo</a>; any gaps are filled from Open-Meteo&rsquo;s best-match model. Layout inspired by the classic Met Office forecast page; this is not an official Met Office product. Weather icons by <a href="https://iconstore.co/icons/weather-vector-icons" target="_blank" rel="noopener">Piotr Grzeszczyk via IconStore</a>. Banner photo: <a href="https://commons.wikimedia.org/wiki/File:Fields_and_woods_near_Basingstoke_-_geograph.org.uk_-_7392242.jpg" target="_blank" rel="noopener">Fields and woods near Basingstoke</a> &copy; <a href="https://www.geograph.org.uk/profile/43370" target="_blank" rel="noopener">Des Blenkinsopp</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA 2.0</a>.</footer>
 
 <script>
 const APP = document.getElementById('app');
@@ -487,6 +487,35 @@ function selectLocation(loc){
   loadLocation(loc);
 }
 
+/* Met Office (UKMO) models via Open-Meteo, with Open-Meteo's best-match model
+   requested alongside to fill fields UKMO doesn't provide (e.g. UV and visibility
+   beyond the 2-day UKV range). Order = priority. */
+const FORECAST_MODELS = ['ukmo_seamless', 'best_match'];
+function mergeModels(fc){
+  if(!fc || fc.error) return fc;
+  ['hourly', 'daily'].forEach(block => {
+    const src = fc[block];
+    if(!src) return;
+    const out = {};
+    const bases = new Set();
+    Object.keys(src).forEach(k => {
+      const m = FORECAST_MODELS.find(id => k.endsWith('_' + id));
+      if(m) bases.add(k.slice(0, -(m.length + 1))); else out[k] = src[k];
+    });
+    bases.forEach(base => {
+      const series = FORECAST_MODELS.map(id => src[`${base}_${id}`]).filter(Array.isArray);
+      if(!series.length) return;
+      out[base] = series[0].map((v, i) => {
+        for(const arr of series){ if(arr[i] != null) return arr[i]; }
+        return out[base] && out[base][i] != null ? out[base][i] : null;
+      });
+      if(Array.isArray(src[base])) out[base] = out[base].map((v, i) => v != null ? v : src[base][i]);
+    });
+    fc[block] = out;
+  });
+  return fc;
+}
+
 async function loadLocation(loc){
   APP.innerHTML = '<div class="loading">Loading forecast...</div>';
   document.getElementById('tabsMount').innerHTML = '';
@@ -496,11 +525,11 @@ async function loadLocation(loc){
     const fUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
       `&hourly=temperature_2m,apparent_temperature,precipitation_probability,weathercode,windspeed_10m,winddirection_10m,windgusts_10m,visibility,relativehumidity_2m,uv_index,is_day` +
       `&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max` +
-      `&wind_speed_unit=mph&timezone=auto&forecast_days=7`;
+      `&models=${FORECAST_MODELS.join(',')}&wind_speed_unit=mph&timezone=auto&forecast_days=7`;
     const aqUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
       `&hourly=european_aqi,alder_pollen,birch_pollen,grass_pollen,ragweed_pollen&timezone=auto&forecast_days=1`;
     const [fRes, aqRes] = await Promise.all([fetch(fUrl), fetch(aqUrl).catch(() => null)]);
-    const forecast = await fRes.json();
+    const forecast = mergeModels(await fRes.json());
     let aq = null;
     if(aqRes && aqRes.ok){
       try{ aq = await aqRes.json(); }catch(e){}
