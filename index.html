@@ -400,6 +400,24 @@ function uvLetter(uv){
   if(uv < 11) return {letter:'VH', color:'var(--uv-very)'};
   return {letter:'EX', color:'var(--uv-extreme)'};
 }
+const POLLEN_VARS = ['alder_pollen','birch_pollen','grass_pollen','mugwort_pollen','olive_pollen','ragweed_pollen'];
+// Worst hourly value for one local date (YYYY-MM-DD) across the given variables; null if none.
+function dailyWorst(hourly, dateStr, vars){
+  if(!hourly || !hourly.time) return null;
+  let worst = null;
+  hourly.time.forEach((t, i) => {
+    if(!t.startsWith(dateStr)) return;
+    vars.forEach(k => {
+      const v = hourly[k] ? hourly[k][i] : null;
+      if(v != null && (worst == null || v > worst)) worst = v;
+    });
+  });
+  return worst;
+}
+function pollenBandFor(v){
+  if(v == null) return null;
+  return v < 10 ? {label:'L', color:'var(--uv-low)'} : v < 50 ? {label:'M', color:'var(--uv-mod)'} : {label:'H', color:'var(--uv-high)'};
+}
 function aqiBand(aqi){
   if(aqi == null) return {label:'-', color:'#888'};
   if(aqi <= 40) return {label:'L', color:'var(--uv-low)'};
@@ -590,7 +608,7 @@ async function loadLocation(loc){
       `&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max` +
       `&models=${FORECAST_MODELS.join(',')}&wind_speed_unit=mph&timezone=auto&forecast_days=7`;
     const aqUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
-      `&hourly=european_aqi,alder_pollen,birch_pollen,grass_pollen,ragweed_pollen&timezone=auto&forecast_days=1`;
+      `&hourly=european_aqi,${POLLEN_VARS.join(',')}&timezone=auto&forecast_days=5`;
     const [fRes, aqRes] = await Promise.all([fetch(fUrl), fetch(aqUrl).catch(() => null)]);
     const forecast = mergeModels(await fRes.json());
     let aq = null;
@@ -693,17 +711,7 @@ function renderDayStrip(aq){
   const daily = forecast.daily;
   const hourly = forecast.hourly;
   const dayDates = currentDayDates;
-  let aqiVal = null, pollenVal = null;
-  if(aq && aq.hourly){
-    const idx = Math.min(12, aq.hourly.time.length - 1);
-    aqiVal = aq.hourly.european_aqi ? aq.hourly.european_aqi[idx] : null;
-    const pollens = ['alder_pollen','birch_pollen','grass_pollen','ragweed_pollen']
-      .map(k => aq.hourly[k] ? aq.hourly[k][idx] : null).filter(v => v != null);
-    if(pollens.length) pollenVal = Math.max(...pollens);
-  }
-  const aqi = aqiBand(aqiVal);
-  const pollenBand = pollenVal == null ? {label:'-', color:'#ccc'} :
-    (pollenVal < 10 ? {label:'L', color:'var(--uv-low)'} : pollenVal < 50 ? {label:'M', color:'var(--uv-mod)'} : {label:'H', color:'var(--uv-high)'});
+  const aqHourly = aq && aq.hourly ? aq.hourly : null;
   const dayStrip = document.getElementById('dayStrip');
   if(!dayStrip) return;
   const fmtTime = s => new Date(s).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
@@ -713,7 +721,10 @@ function renderDayStrip(aq){
     const lo = Math.round(daily.temperature_2m_min[i]);
     if(i === selectedDayIdx){
       const uv = uvLetter(daily.uv_index_max[i]);
-      const showAir = i === 0;
+      // Pollution / pollen: worst hour of the day; hidden beyond the air-quality forecast range.
+      const aqiVal = dailyWorst(aqHourly, daily.time[i], ['european_aqi']);
+      const aqi = aqiVal == null ? null : aqiBand(aqiVal);
+      const pollenBand = pollenBandFor(dailyWorst(aqHourly, daily.time[i], POLLEN_VARS));
       return `<div class="detail-panel" data-selected-day="${i}">
         <div class="dleft">
           <div class="dtitle">${fmtDate(d)}</div>
@@ -727,8 +738,8 @@ function renderDayStrip(aq){
           <div class="dsummary">${buildDaySummary(currentDayGroups[i] || [], hourly)}</div>
           <div class="chips">
             <div class="chip"><span class="badge sq ${uv.dark ? 'dark-text' : ''}" style="background:${uv.color}">${uv.letter}</span>UV</div>
-            ${showAir ? `<div class="chip"><span class="badge diamond ${aqi.label === 'M' ? 'dark-text' : ''}" style="background:${aqi.color}"><span>${aqi.label}</span></span>Pollution</div>` : ''}
-            ${showAir && pollenVal != null ? `<div class="chip"><span class="badge circle ${pollenBand.label === 'M' ? 'dark-text' : ''}" style="background:${pollenBand.color}">${pollenBand.label}</span>Pollen</div>` : ''}
+            ${aqi ? `<div class="chip"><span class="badge diamond ${aqi.label === 'M' ? 'dark-text' : ''}" style="background:${aqi.color}"><span>${aqi.label}</span></span>Pollution</div>` : ''}
+            ${pollenBand ? `<div class="chip"><span class="badge circle ${pollenBand.label === 'M' ? 'dark-text' : ''}" style="background:${pollenBand.color}">${pollenBand.label}</span>Pollen</div>` : ''}
           </div>
         </div>
       </div>`;
