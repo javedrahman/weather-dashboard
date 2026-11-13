@@ -45,7 +45,7 @@
     background:#8a8f6a url("assets/banner.jpg") center 38% / cover no-repeat;
     padding:18px 0 0;
   }
-  .searchbar{position:relative;max-width:1240px;margin:0 auto;padding:0 16px 22px}
+  .searchbar{position:relative;max-width:1880px;margin:0 auto;padding:0 16px 22px}
   .searchbar input{
     width:100%;height:58px;border:0;border-radius:0;background:#fff;
     padding:0 56px 0 22px;font:400 22px var(--font);color:var(--ink);
@@ -66,44 +66,57 @@
   .suggestions-heading{padding:9px 22px 5px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase}
 
   /* ---------- day tabs ---------- */
-  .tabs-outer{max-width:1240px;margin:0 auto;padding:0 16px}
-  .day-strip{display:flex;overflow-x:auto;background:var(--tab-grey);scrollbar-width:thin;scrollbar-color:#9a9a9a #e9e9e9}
-  .day-strip::-webkit-scrollbar{height:10px}
-  .day-strip::-webkit-scrollbar-track{background:#e9e9e9}
+  .tabs-outer{max-width:1880px;margin:0 auto;padding:0 16px}
+  .day-strip{
+    display:flex;align-items:flex-end;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:thin;scrollbar-color:#9a9a9a transparent;
+  }
+  .day-strip::-webkit-scrollbar{height:8px}
   .day-strip::-webkit-scrollbar-thumb{background:#9a9a9a;border-radius:6px}
 
-  .detail-panel{flex:0 0 340px;background:#fff;padding:16px 18px 16px;display:flex;flex-direction:column;gap:9px;min-height:132px}
-  .detail-panel .dtitle{font-size:24px;font-weight:600;line-height:1.1}
-  .detail-panel .dtemps{font-size:22px;line-height:1}
-  .detail-panel .dtemps .lo{font-size:15px;margin-left:4px}
-  .detail-panel .dsun{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;margin-top:6px}
+  /* Selected day: taller white tab, rounded top, two columns split by a rule */
+  .detail-panel{
+    flex:0 0 max(500px, 40%);min-height:200px;background:#fff;border-radius:10px 10px 0 0;
+    display:grid;grid-template-columns:auto 1fr;padding:22px 0 20px;
+  }
+  .dleft{display:flex;flex-direction:column;padding:0 22px 0 24px;border-right:1px solid #cfcfcf}
+  .dright{display:flex;flex-direction:column;padding:2px 22px 0 24px;min-width:0}
+  .detail-panel .dtitle{font-size:30px;font-weight:600;line-height:1.1;white-space:nowrap}
+  .detail-panel .dtemps{font-size:24px;line-height:1;margin-top:14px}
+  .detail-panel .dtemps .lo{font-size:17px;margin-left:5px}
+  .detail-panel .dsun{display:flex;gap:22px;font-size:16px;margin-top:auto;padding-top:22px;white-space:nowrap}
   .detail-panel .dsun span{display:inline-flex;align-items:center;gap:6px}
   .detail-panel .dsun b{font-weight:600}
-  .detail-panel .dsun svg{width:18px;height:16px}
-  .detail-panel .dsummary{font-size:15px;line-height:1.35}
-  .chips{display:flex;gap:16px;flex-wrap:wrap}
-  .chip{display:flex;align-items:center;gap:6px;font-size:13px}
-  .badge{display:inline-flex;align-items:center;justify-content:center;color:#111;font-weight:600;font-size:12px}
-  .badge.sq{width:22px;height:22px}
-  .badge.diamond{width:18px;height:18px;transform:rotate(45deg);margin:0 2px}
+  .detail-panel .dsun svg{width:22px;height:20px}
+  .detail-panel .dsummary{font-size:17px;line-height:1.35;color:#3a3a3a}
+  .chips{display:flex;gap:56px;margin-top:auto;padding-top:16px}
+  .chip{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:17px;min-width:36px}
+  .badge{display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:15px}
+  .badge.dark-text{color:#111}
+  .badge.sq{width:34px;height:34px}
+  .badge.diamond{width:28px;height:28px;transform:rotate(45deg);margin:3px}
   .badge.diamond span{transform:rotate(-45deg)}
-  .badge.circle{width:22px;height:22px;border-radius:50%}
+  .badge.circle{width:34px;height:34px;border-radius:50%}
 
+  /* Other days: shorter grey tabs with rounded tops */
   .day-chip{
-    flex:0 0 108px;border:0;border-left:1px solid var(--tab-line);background:var(--tab-grey);cursor:pointer;
-    padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--font);color:var(--ink);
+    flex:1 0 116px;min-height:172px;border:0;border-left:2px solid #e2e2e2;border-radius:0;
+    background:var(--tab-grey);cursor:pointer;padding:24px 10px 16px;
+    display:flex;flex-direction:column;align-items:center;gap:16px;font-family:var(--font);color:var(--ink);
   }
-  .detail-panel + .day-chip{border-left:0}
-  .day-chip:hover{background:#e9e9e9}
-  .day-chip .dname{font-size:15px;color:var(--muted)}
-  .day-chip .drow{display:flex;align-items:center;gap:6px}
-  .day-chip .dicon svg{width:40px;height:40px;display:block}
-  .day-chip .dtemp{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
-  .day-chip .hi{font-size:26px}
-  .day-chip .lo{font-size:15px;margin-top:3px}
+  .detail-panel + .day-chip,.day-chip:first-child{border-left:0}
+  .day-chip.first-grey{border-top-left-radius:10px}
+  .day-chip.last-grey{border-top-right-radius:10px}
+  .day-chip:hover{background:#e8e8e8}
+  .day-chip .dname{font-size:18px;color:#3a3a3a;white-space:nowrap}
+  .day-chip .drow{display:flex;align-items:center;gap:12px}
+  .day-chip .dicon svg{width:52px;height:52px;display:block}
+  .day-chip .dtemp{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+  .day-chip .hi{font-size:30px}
+  .day-chip .lo{font-size:18px;margin-top:6px}
 
   /* ---------- hourly table ---------- */
-  .table-wrap{max-width:1240px;margin:28px auto 0;padding:0 16px 34px;position:relative}
+  .table-wrap{max-width:1880px;margin:28px auto 0;padding:0 16px 34px;position:relative}
   .forecast-shell{position:relative;background:#fff;overflow:hidden}
   .forecast-scroll{overflow-x:auto;overflow-y:hidden;scrollbar-color:#9a9a9a #f2f2f2;scrollbar-width:thin}
   .forecast-scroll::-webkit-scrollbar{height:10px}
@@ -168,17 +181,23 @@
   .uv-badge{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;color:#111;font-size:15px}
   .uv-badge.night{background:transparent !important;color:var(--ink)}
 
-  footer{max-width:1240px;margin:0 auto;padding:0 16px 36px;font-size:13px;color:var(--muted);line-height:1.45}
-  .loading,.error{max-width:1240px;margin:40px auto;padding:0 16px;color:var(--muted);font-size:16px;text-align:center}
+  footer{max-width:1880px;margin:0 auto;padding:0 16px 36px;font-size:13px;color:var(--muted);line-height:1.45}
+  .loading,.error{max-width:1880px;margin:40px auto;padding:0 16px;color:var(--muted);font-size:16px;text-align:center}
 
   @media (max-width:720px){
     :root{--colw:58px;--gapw:28px}
     .brand{font-size:21px}
     .searchbar input{height:50px;font-size:19px}
     .search-icon{top:25px}
-    .detail-panel{flex-basis:290px}
-    .detail-panel .dtitle{font-size:21px}
-    .day-chip{flex-basis:96px}
+    .detail-panel{flex-basis:300px;grid-template-columns:1fr;row-gap:14px;padding:18px 0 16px;min-height:0}
+    .dleft{border-right:0;padding:0 18px}
+    .dright{padding:12px 18px 0;border-top:1px solid #e2e2e2}
+    .detail-panel .dtitle{font-size:24px}
+    .detail-panel .dsun{font-size:14px;padding-top:14px}
+    .chips{gap:32px}
+    .day-chip{flex:0 0 108px;min-height:150px;padding:18px 6px 12px}
+    .day-chip .hi{font-size:24px}
+    .day-chip .dicon svg{width:42px;height:42px}
     .nav-btn{display:none}
   }
 </style>
@@ -241,7 +260,7 @@ function loadRecents(){
 function saveRecent(loc){
   try{
     let recents = loadRecents().filter(r => !(r.latitude === loc.latitude && r.longitude === loc.longitude));
-    recents.unshift({name:loc.name, admin1:loc.admin1, country:loc.country, latitude:loc.latitude, longitude:loc.longitude});
+    recents.unshift({name:loc.name, admin1:loc.admin1, admin2:loc.admin2, country:loc.country, country_code:loc.country_code, latitude:loc.latitude, longitude:loc.longitude});
     localStorage.setItem(LS_RECENTS, JSON.stringify(recents.slice(0, MAX_RECENTS)));
   }catch(e){}
 }
@@ -251,7 +270,7 @@ function loadLastLocation(){
 function saveLastLocation(loc){
   try{
     localStorage.setItem(LS_LAST_LOCATION, JSON.stringify({
-      name:loc.name, admin1:loc.admin1, country:loc.country, latitude:loc.latitude, longitude:loc.longitude
+      name:loc.name, admin1:loc.admin1, admin2:loc.admin2, country:loc.country, country_code:loc.country_code, latitude:loc.latitude, longitude:loc.longitude
     }));
   }catch(e){}
 }
@@ -373,6 +392,14 @@ function uvBand(uv){
   if(uv < 11) return {label:Math.round(uv), color:'var(--uv-very)'};
   return {label:Math.round(uv), color:'var(--uv-extreme)'};
 }
+// Daily UV as Met Office-style bands: L / M / H / VH / EX
+function uvLetter(uv){
+  if(uv == null || uv < 3) return {letter:'L', color:'var(--uv-low)'};
+  if(uv < 6) return {letter:'M', color:'var(--uv-mod)', dark:true};
+  if(uv < 8) return {letter:'H', color:'var(--uv-high)'};
+  if(uv < 11) return {letter:'VH', color:'var(--uv-very)'};
+  return {letter:'EX', color:'var(--uv-extreme)'};
+}
 function aqiBand(aqi){
   if(aqi == null) return {label:'-', color:'#888'};
   if(aqi <= 40) return {label:'L', color:'var(--uv-low)'};
@@ -421,22 +448,58 @@ function showDropdownDefault(){
   let html = `<div class="suggestion current-loc" data-current="1">${CURRENT_LOC_ICON} Use my current location</div>`;
   if(recents.length){
     html += `<div class="suggestions-heading">Recent places</div>`;
-    html += recents.map((r,i) => `<div class="suggestion" data-recent-idx="${i}">${r.name}<small>${[r.admin1, r.country].filter(Boolean).join(', ')}</small></div>`).join('');
+    html += recents.map((r,i) => placeRow(r, `data-recent-idx="${i}"`)).join('');
   }
   suggestionsBox.innerHTML = html;
   suggestionsBox.classList.add('show');
   wireDropdownHandlers(null, recents);
 }
-async function doSearch(q){
-  try{
-    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=8&language=en&format=json`);
-    const data = await res.json();
-    renderSuggestions(data.results || []);
-  }catch(e){ suggestionsBox.classList.remove('show'); }
+// Place search: UK places first (Met Office style "Andover (Hampshire)"),
+// topped up with places elsewhere only when the UK has few matches.
+const UK_CODE = 'GB';
+function isUK(r){ return (r.country_code || '').toUpperCase() === UK_CODE || r.country === 'United Kingdom'; }
+function escapeHtml(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function placeLabel(r){
+  if(isUK(r)){
+    const area = r.admin2 || r.admin1;
+    return area && area !== r.name ? `${r.name} (${area})` : r.name;
+  }
+  return [r.name, r.admin1, r.country].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i).join(', ');
 }
-function renderSuggestions(results){
-  if(!results.length){ suggestionsBox.classList.remove('show'); return; }
-  suggestionsBox.innerHTML = results.map((r,i) => `<div class="suggestion" data-idx="${i}">${r.name}<small>${[r.admin1, r.country].filter(Boolean).join(', ')}</small></div>`).join('');
+function placeRow(r, attr){
+  return `<div class="suggestion" ${attr}>${escapeHtml(placeLabel(r))}</div>`;
+}
+let searchSeq = 0;
+async function geocode(q, extra){
+  const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=10&language=en&format=json${extra || ''}`);
+  const data = await res.json();
+  return data.results || [];
+}
+async function doSearch(q){
+  const seq = ++searchSeq;
+  try{
+    const uk = await geocode(q, `&countryCode=${UK_CODE}`);
+    let other = [];
+    if(uk.length < 4){
+      other = (await geocode(q)).filter(r => !isUK(r)).slice(0, 6 - Math.min(uk.length, 3));
+    }
+    if(seq !== searchSeq) return;   // a newer keystroke has superseded this search
+    renderSuggestions(uk, other);
+  }catch(e){ if(seq === searchSeq) suggestionsBox.classList.remove('show'); }
+}
+function renderSuggestions(uk, other){
+  const results = [...uk, ...(other || [])];
+  if(!results.length){
+    suggestionsBox.innerHTML = `<div class="suggestions-heading">No places found</div>`;
+    suggestionsBox.classList.add('show');
+    return;
+  }
+  let html = uk.map((r, i) => placeRow(r, `data-idx="${i}"`)).join('');
+  if(other && other.length){
+    html += `<div class="suggestions-heading">Outside the UK</div>`;
+    html += other.map((r, j) => placeRow(r, `data-idx="${uk.length + j}"`)).join('');
+  }
+  suggestionsBox.innerHTML = html;
   suggestionsBox.classList.add('show');
   wireDropdownHandlers(results, null);
 }
@@ -603,7 +666,7 @@ function render(){
   currentDayDates = dayDates;
   if(selectedDayIdx >= dayGroups.length) selectedDayIdx = 0;
 
-  const parts = [loc.admin1, loc.country].filter(Boolean).join(', ');
+  const parts = [loc.admin2 || loc.admin1, loc.country].filter(Boolean).join(', ');
   document.title = `${loc.name} weather`;
   document.getElementById('tabsMount').innerHTML = `<div class="day-strip" id="dayStrip"></div>`;
   APP.innerHTML = `
@@ -649,24 +712,31 @@ function renderDayStrip(aq){
     const hi = Math.round(daily.temperature_2m_max[i]);
     const lo = Math.round(daily.temperature_2m_min[i]);
     if(i === selectedDayIdx){
-      const uv = uvBand(daily.uv_index_max[i]);
+      const uv = uvLetter(daily.uv_index_max[i]);
       const showAir = i === 0;
       return `<div class="detail-panel" data-selected-day="${i}">
-        <div class="dtitle">${fmtDate(d)}</div>
-        <div class="dtemps">${hi}&deg;<span class="lo">${lo}&deg;</span></div>
-        <div class="dsun">
-          <span>${SUNRISE_ICON}<b>Sunrise:</b> ${fmtTime(daily.sunrise[i])}</span>
-          <span>${SUNSET_ICON}<b>Sunset:</b> ${fmtTime(daily.sunset[i])}</span>
+        <div class="dleft">
+          <div class="dtitle">${fmtDate(d)}</div>
+          <div class="dtemps">${hi}&deg;<span class="lo">${lo}&deg;</span></div>
+          <div class="dsun">
+            <span>${SUNRISE_ICON}<b>Sunrise:</b> ${fmtTime(daily.sunrise[i])}</span>
+            <span>${SUNSET_ICON}<b>Sunset:</b> ${fmtTime(daily.sunset[i])}</span>
+          </div>
         </div>
-        <div class="dsummary">${buildDaySummary(currentDayGroups[i] || [], hourly)}</div>
-        <div class="chips">
-          <div class="chip"><span class="badge sq" style="background:${uv.night ? '#ccc' : uv.color}">${uv.label}</span> UV</div>
-          ${showAir ? `<div class="chip"><span class="badge diamond" style="background:${aqi.color}"><span>${aqi.label}</span></span> Pollution</div>
-          <div class="chip"><span class="badge circle" style="background:${pollenBand.color}">${pollenBand.label}</span> Pollen</div>` : ''}
+        <div class="dright">
+          <div class="dsummary">${buildDaySummary(currentDayGroups[i] || [], hourly)}</div>
+          <div class="chips">
+            <div class="chip"><span class="badge sq ${uv.dark ? 'dark-text' : ''}" style="background:${uv.color}">${uv.letter}</span>UV</div>
+            ${showAir ? `<div class="chip"><span class="badge diamond ${aqi.label === 'M' ? 'dark-text' : ''}" style="background:${aqi.color}"><span>${aqi.label}</span></span>Pollution</div>` : ''}
+            ${showAir && pollenVal != null ? `<div class="chip"><span class="badge circle ${pollenBand.label === 'M' ? 'dark-text' : ''}" style="background:${pollenBand.color}">${pollenBand.label}</span>Pollen</div>` : ''}
+          </div>
         </div>
       </div>`;
     }
-    return `<button class="day-chip" data-day-idx="${i}" type="button" aria-label="${fmtDateLong(d)}">
+    const nDays = currentDayGroups.length;
+    // Only the outermost corners of the whole tab row are rounded.
+    const edge = (i === 0 ? ' first-grey' : '') + (i === nDays - 1 ? ' last-grey' : '');
+    return `<button class="day-chip${edge}" data-day-idx="${i}" type="button" aria-label="${fmtDateLong(d)}">
       <span class="dname">${fmtDate(d)}</span>
       <span class="drow">
         <span class="dicon">${wxIconSVG(info.icon, 40)}</span>
